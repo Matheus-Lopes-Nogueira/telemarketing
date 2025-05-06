@@ -55,7 +55,7 @@ def to_excel(df):
 # Função principal da aplicação
 def main():
     # Título principal da aplicação
-    st.write('# Telemarketing analisys')
+    st.write('# Isa legal Radical')
     st.markdown("---")
     
     # Apresenta a imagem na barra lateral da aplicação
