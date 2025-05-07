@@ -1,4 +1,3 @@
-
 # Imports
 import pandas            as pd
 import streamlit         as st
@@ -21,7 +20,7 @@ sns.set_theme(style="ticks", rc=custom_params)
 
 
 # Função para ler os dados
-@st.cache(show_spinner= True, allow_output_mutation=True)
+@st.cache_data(show_spinner=True)
 def load_data(file_data):
     try:
         return pd.read_csv(file_data, sep=';')
@@ -29,7 +28,7 @@ def load_data(file_data):
         return pd.read_excel(file_data)
 
 # Função para filtrar baseado na multiseleção de categorias
-@st.cache(allow_output_mutation=True)
+@st.cache_data
 def multiselect_filter(relatorio, col, selecionados):
     if 'all' in selecionados:
         return relatorio
@@ -37,7 +36,7 @@ def multiselect_filter(relatorio, col, selecionados):
         return relatorio[relatorio[col].isin(selecionados)].reset_index(drop=True)
 
 # Função para converter o df para csv
-@st.cache
+@st.cache_data
 def convert_df(df):
     return df.to_csv(index=False).encode('utf-8')
 
@@ -48,14 +47,13 @@ def to_excel(df):
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     df.to_excel(writer, index=False, sheet_name='Sheet1')
     writer.close()
-    processed_data = output.getvalue()
-    return processed_data
+    return output.getvalue()
+
 
 
 # Função principal da aplicação
 def main():
-    # Título principal da aplicação
-    st.write('# Isa legal Radical')
+    st.title("Análise de Telemarketing")
     st.markdown("---")
     
     # Apresenta a imagem na barra lateral da aplicação
@@ -87,8 +85,7 @@ def main():
                                         max_value = max_age, 
                                         value = (min_age, max_age),
                                         step = 1)
-
-
+            
             # PROFISSÕES
             jobs_list = bank.job.unique().tolist()
             jobs_list.append('all')
@@ -196,36 +193,27 @@ def main():
         st.write('## Proporção de aceite')
         
     # Calcular proporções de resposta
-    bank_raw_target_perc_df = bank_raw['y'].value_counts(normalize=True).reset_index()
-    bank_raw_target_perc_df.columns = ['y', 'proportion']
+        bank_raw_target_perc_df = bank_raw['y'].value_counts(normalize=True).reset_index()
+        bank_raw_target_perc_df.columns = ['y', 'proportion']
 
-    bank_target_perc_df = bank['y'].value_counts(normalize=True).reset_index()
-    bank_target_perc_df.columns = ['y', 'proportion']
+        bank_target_perc_df = bank['y'].value_counts(normalize=True).reset_index()
+        bank_target_perc_df.columns = ['y', 'proportion']
 
-    # # PLOTS    
-    fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+        # PLOTS    
+        fig, ax = plt.subplots(1, 2, figsize=(10, 4))
 
-    sns.barplot(x='y', y='proportion', data=bank_raw_target_perc_df, ax=ax[0])
-    ax[0].bar_label(ax[0].containers[0])
-    ax[0].set_title('Dados brutos', fontweight="bold")
+        sns.barplot(x='y', y='proportion', data=bank_raw_target_perc_df, ax=ax[0])
+        ax[0].bar_label(ax[0].containers[0])
+        ax[0].set_title('Dados brutos', fontweight="bold")
 
-    sns.barplot(x='y', y='proportion', data=bank_target_perc_df, ax=ax[1])
-    ax[1].bar_label(ax[1].containers[0])
-    ax[1].set_title('Dados filtrados', fontweight="bold")
+        sns.barplot(x='y', y='proportion', data=bank_target_perc_df, ax=ax[1])
+        ax[1].bar_label(ax[1].containers[0])
+        ax[1].set_title('Dados filtrados', fontweight="bold")
 
-    st.write('## Proporção de aceite')
+        st.write('## Proporção de aceite')
 
-    st.pyplot(plt)
+        st.pyplot(plt)
+
 
 if __name__ == '__main__':
-	main()
-    
-
-
-
-
-
-
-
-
-
+    main()
